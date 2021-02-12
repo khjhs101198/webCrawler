@@ -1,0 +1,21 @@
+{
+  "name": "puppeteer",
+  "version": "1.0.0",
+  "description": "use headless browser to crawl ",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "headlessBrowser",
+    "crawler"
+  ],
+  "author": "khjhs101198",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer-core": "^7.0.1",
+    "request": "^2.88.2",
+    "request-promise-native": "^1.0.9"
+  }
+}
