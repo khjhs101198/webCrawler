@@ -69,7 +69,7 @@ async function getUrl_req(url) {
   })
   await browser.close();
   for(let i=0; i<result.length; i++) {
-    let fileName = await `./images/example${i}` + result[i].slice( result[i].lastIndexOf("."), result[i].length );
+    let fileName = await `E:/example${i}` + result[i].slice( result[i].lastIndexOf("."), result[i].length );
     await rp(result[i]).pipe(fs.createWriteStream(fileName));
   }
   console.log("Complete");
