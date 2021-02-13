@@ -3,6 +3,8 @@ const fs = require("fs");
 const rp = require("request-promise-native");
 const express = require("express");
 const app = express();
+const urlencodedParser = express.urlencoded({extended: false});
+const jsonParser = express.json();
 
 async function getUrl(url) {
   let result;
@@ -37,7 +39,7 @@ async function store(page, url, idx, type) {
       return res.buffer();
     })
     .then(function(res){
-      fs.writeFile(`./example${idx}${type}`, res, function(err){
+      fs.writeFile(`./download/example${idx}${type}`, res, function(err){
         if(err) console.log("Error in write file:" + err);
       });
     })
@@ -69,37 +71,45 @@ async function getUrl_req(url) {
   })
   await browser.close();
   for(let i=0; i<result.length; i++) {
-    let fileName = await `E:/example${i}` + result[i].slice( result[i].lastIndexOf("."), result[i].length );
+    let fileName = await `./download/example${i}` + result[i].slice( result[i].lastIndexOf("."), result[i].length );
     await rp(result[i]).pipe(fs.createWriteStream(fileName));
   }
   console.log("Complete");
 }
 
 /*Get mutiple pages*/
-async function getUrl_multiple(url) {
+async function getUrl_multiple(url, pageS, pageE, imgS, imgE) {
   let result;
   const browser = await puppeteer.launch({
     executablePath: "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"
   });
   const page = await browser.newPage();
   await page.goto(url);
-  for(let i=0; i<5; i++) {
+  await page.waitForSelector(".jump-input");
+  await page.click(".jump-input");
+  await page.keyboard.sendCharacter((pageS+1).toString());
+  await page.waitForFunction("document.querySelector('.jump-btn').disabled === false");
+  await Promise.all([
+    page.click(".jump-btn"),
+    page.waitForFunction("document.querySelector('.jump-btn').disabled === true")
+  ]);
+  for(let i=pageS; i<pageE; i++) {
     await page.waitForSelector(".cuc.grows");
     await page.waitForSelector(".my-3 .btn--large:last-child");
-    await page.evaluate(function() {
+    await page.evaluate(function(imgS, imgE) {
       let data = document.querySelectorAll(".cuc.grows");
       let result = [];
-      for(let i=0; i<2; i++) {
+      for(let i=imgS; i<imgE; i++) {
         result.push(data[i].href);
       }
       return result;
-    }).then(function(res){
+    }, imgS, imgE).then(function(res){
       result = res;
     }).catch(function(err){
       console.log(err);
     })
     for(let j=0; j<result.length; j++) {
-      let fileName = await `./images/example${i}-${j}` + result[j].slice( result[j].lastIndexOf("."), result[j].length );
+      let fileName = await `./download/example${i}-${j+imgS}` + result[j].slice( result[j].lastIndexOf("."), result[j].length );
       await rp(result[j]).pipe(fs.createWriteStream(fileName));
     }
     await Promise.all([
@@ -114,14 +124,22 @@ async function getUrl_multiple(url) {
   console.log("Complete");
 }
 
-app.use(express.static(__dirname+"/script"));
+async function getImage(req, res, next) {
+  await getUrl_multiple("https://members.hanime.tv/browse/images", Number(req.body.pageS), Number(req.body.pageE), Number(req.body.imgS), Number(req.body.imgE));
+  await next();
+}
+
+app.set("view engine", "ejs");
+app.use(express.static(__dirname+"/public"));
+app.use(urlencodedParser, jsonParser);
+
 app.get("/", function(req, res){
-  res.sendFile(`${__dirname}/main.html`);
+  res.render("main.ejs");
 });
-app.get("/download", function(req, res){
-  getUrl_req("https://members.hanime.tv/browse/images");
-  res.send("test");
-});
+app.post("/", getImage, function(req, res){
+  res.send("Complete to download all images");
+})
+
 app.listen(process.env.PORT||3000, function(err){
   if(err) throw err;
   console.log("Work properly");

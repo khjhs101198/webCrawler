@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Web Crawler</title>
+    <meta charset="utf-8"/>
+    <link href="/stylesheets/main.css" type="text/css" rel="stylesheet"/>
+  </head>
+  <body>
+    <header>
+      <h1>Web Crawler</h1>
+    </header>
+    <div class="main_content">
+      <form class="search" autocomplete="off">
+        <label>Page</label>
+        <p>From: <input type="text" name="pageS" required/> To: <input type="text" name="pageE" required/></p>
+        <label>Image</label>
+        <p>From: <input type="text" name="imgS" required/> To: <input type="text" name="imgE" required/></p>
+        <p><input type="submit" value="Submit" id="btn"/></p>
+      </form>
+      <div class="loading_bar">
+        <div>
+          <p>Downloading</p>
+          <img id="loading" src="/images/loading.gif"/>
+        </div>
+      </div>
+    </div>
+    <footer>
+
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="/scripts/main.js"></script>
+  </body>
+</html>

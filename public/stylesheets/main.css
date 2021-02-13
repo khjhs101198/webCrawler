@@ -1,0 +1,50 @@
+html, body {
+  box-sizing: border-box;
+  margin: 0px;
+  font-family: fantasy;
+  color: white;
+}
+body {
+  background-color: rgba(0,0,0,0.8);
+}
+h1 {
+  margin: 0px;
+  text-align: center;
+  padding: 20px 0px 20px 0px;
+}
+
+form p {
+  margin: 0px;
+  padding: 10px 30% 10px 30%;
+  width: 40%;
+  font-size: 16px;
+}
+
+label {
+  display: block;
+  padding: 10px 30% 10px 30%;
+  width: 40%;
+  font-size: 24px;
+}
+
+#btn {
+  width: 100%;
+}
+
+.main_content {
+  margin-left: 5%;
+  margin-right: 5%;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.loading_bar div{
+  display: flex;
+  padding: 10px 30% 10px 30%;
+}
+.loading_bar div p {
+  margin: 0px;
+  font-size: 20px;
+}
+#loading {
+  height: 23px;
+}
